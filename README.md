@@ -11,8 +11,8 @@
 1) Клонируйте репозиторий и перейдите в папку проекта
 
 ```bash
-git clone <repo_url>
-cd <project_folder>
+git clone https://github.com/uiper123/VideRedactor.git
+cd VideRedactor
 ```
 
 2) Установите зависимости
