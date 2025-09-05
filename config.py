@@ -1,8 +1,15 @@
 import os
 from pathlib import Path
 
+# Load .env if present so BOT_TOKEN can be provided via a .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=Path(__file__).parent / ".env")
+except Exception:
+    pass
+
 # Telegram Bot Token (получить у @BotFather)
-BOT_TOKEN = os.getenv('BOT_TOKEN', 'Telegram_TOKEN')
+BOT_TOKEN = os.getenv('BOT_TOKEN', '')
 
 # Папка для скачивания видео
 DOWNLOAD_DIR = Path('downloads')

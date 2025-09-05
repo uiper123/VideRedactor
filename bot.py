@@ -1065,11 +1065,24 @@ async def handle_headers_setting(update: Update, context: ContextTypes.DEFAULT_T
 
 def main() -> None:
     """Запуск бота"""
-    if BOT_TOKEN == 'YOUR_BOT_TOKEN_HERE':
-        print("❌ Ошибка: Не установлен BOT_TOKEN!")
-        print("Получите токен у @BotFather и установите переменную окружения BOT_TOKEN")
-        print("Или измените значение в config.py")
+    sentinel_tokens = {'BOT_TOKEN'}
+    # Stronger validation: empty/placeholder/invalid format
+    import re
+    def is_probably_valid_token(token: str) -> bool:
+        return bool(token) and token not in sentinel_tokens and re.match(r'^\d+:[A-Za-z0-9_-]{30,}$', token or '') is not None
+    if not is_probably_valid_token(BOT_TOKEN):
+        print("❌ Ошибка: Неверный или отсутствует BOT_TOKEN!")
+        print("Установите переменную окружения BOT_TOKEN или измените значение в config.py")
+        print("Windows PowerShell:  $env:BOT_TOKEN=123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        print("Windows CMD:         set BOT_TOKEN=123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        print("Linux/macOS:         export BOT_TOKEN=123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+        # Показать, что именно пришло (маскируем)
+        masked = (BOT_TOKEN[:5] + "..." + BOT_TOKEN[-5:]) if BOT_TOKEN and len(BOT_TOKEN) > 12 else (BOT_TOKEN or "<empty>")
+        print(f"Текущее значение BOT_TOKEN: {masked}")
         return
+    
+    masked = BOT_TOKEN[:5] + "..." if len(BOT_TOKEN) > 8 else "***"
+    print(f"✅ Найден BOT_TOKEN: {masked}")
     
     # Создаем приложение
     application = Application.builder().token(BOT_TOKEN).build()
@@ -1080,7 +1093,6 @@ def main() -> None:
     application.add_handler(CommandHandler("settings", settings_command))
     application.add_handler(CommandHandler("reset_headers", reset_headers_command))
     application.add_handler(CallbackQueryHandler(settings_callback, pattern=r'^CFG:'))
-    application.add_handler(MessageHandler(filters.Document.ALL, handle_document))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     
     # Запускаем бота
