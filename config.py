@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 # Telegram Bot Token (получить у @BotFather)
-BOT_TOKEN = os.getenv('BOT_TOKEN', '7850144731:AAHeHudyAVljC2J_CR8NLZznqnDHu8ZgLUw')
+BOT_TOKEN = os.getenv('BOT_TOKEN', 'Telegram_TOKEN')
 
 # Папка для скачивания видео
 DOWNLOAD_DIR = Path('downloads')
